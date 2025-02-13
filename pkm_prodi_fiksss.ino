@@ -1,105 +1,94 @@
-#define IR_SENSOR_RIGHT 12
-#define IR_SENSOR_LEFT 11
-#define MOTOR_SPEED 100
+#define SENSOR_IR_KANAN 12
+#define SENSOR_IR_KIRI 11
+#define KECEPATAN_MOTOR 100
 
-//Right motor
-int enableRightMotor=9;
-int rightMotorPin1=8;
-int rightMotorPin2=7;
+// Motor Kanan
+int enableMotorKanan = 9;
+int motorKananPin1 = 8;
+int motorKananPin2 = 7;
 
-//Left motor
-int enableLeftMotor=3;
-int leftMotorPin1=4;
-int leftMotorPin2=5;
+// Motor Kiri
+int enableMotorKiri = 3;
+int motorKiriPin1 = 4;
+int motorKiriPin2 = 5;
 
 void setup()
 {
-  //The problem with TT gear motors is that, at very low pwm value it does not even rotate.
-  //If we increase the PWM value then it rotates faster and our robot is not controlled in that speed and goes out of line.
-  //For that we need to increase the frequency of analogWrite.
-  //Below line is important to change the frequency of PWM signal on pin D5 and D6
-  //Because of this, motor runs in controlled manner (lower speed) at high PWM value.
-  //This sets frequecny as 7812.5 hz.
-  TCCR0B = TCCR0B & B11111000 | B00000010 ;
+  TCCR0B = TCCR0B & B11111000 | B00000010;
   
-  // put your setup code here, to run once:
-  pinMode(enableRightMotor, OUTPUT);
-  pinMode(rightMotorPin1, OUTPUT);
-  pinMode(rightMotorPin2, OUTPUT);
+  pinMode(enableMotorKanan, OUTPUT);
+  pinMode(motorKananPin1, OUTPUT);
+  pinMode(motorKananPin2, OUTPUT);
   
-  pinMode(enableLeftMotor, OUTPUT);
-  pinMode(leftMotorPin1, OUTPUT);
-  pinMode(leftMotorPin2, OUTPUT);
+  pinMode(enableMotorKiri, OUTPUT);
+  pinMode(motorKiriPin1, OUTPUT);
+  pinMode(motorKiriPin2, OUTPUT);
 
-  pinMode(IR_SENSOR_RIGHT, INPUT);
-  pinMode(IR_SENSOR_LEFT, INPUT);
-  rotateMotor(0,0);   
+  pinMode(SENSOR_IR_KANAN, INPUT);
+  pinMode(SENSOR_IR_KIRI, INPUT);
+  putarMotor(0, 0);   
 }
-
 
 void loop()
 {
+  int nilaiSensorKanan = digitalRead(SENSOR_IR_KANAN);
+  int nilaiSensorKiri = digitalRead(SENSOR_IR_KIRI);
 
-  int rightIRSensorValue = digitalRead(IR_SENSOR_RIGHT);
-  int leftIRSensorValue = digitalRead(IR_SENSOR_LEFT);
-
-  //If none of the sensors detects black line, then go straight
-  if (rightIRSensorValue == LOW && leftIRSensorValue == LOW)
+  // Jika tidak ada sensor yang mendeteksi garis hitam, maka maju
+  if (nilaiSensorKanan == LOW && nilaiSensorKiri == LOW)
   {
-    rotateMotor(MOTOR_SPEED, MOTOR_SPEED);
+    putarMotor(KECEPATAN_MOTOR, KECEPATAN_MOTOR);
   }
-  //If right sensor detects black line, then turn right
-  else if (rightIRSensorValue == HIGH && leftIRSensorValue == LOW )
+  // Jika sensor kanan mendeteksi garis hitam, maka belok kanan
+  else if (nilaiSensorKanan == HIGH && nilaiSensorKiri == LOW)
   {
-      rotateMotor(-MOTOR_SPEED, MOTOR_SPEED); 
+      putarMotor(-KECEPATAN_MOTOR, KECEPATAN_MOTOR); 
   }
-  //If left sensor detects black line, then turn left  
-  else if (rightIRSensorValue == LOW && leftIRSensorValue == HIGH )
+  // Jika sensor kiri mendeteksi garis hitam, maka belok kiri  
+  else if (nilaiSensorKanan == LOW && nilaiSensorKiri == HIGH)
   {
-      rotateMotor(MOTOR_SPEED, -MOTOR_SPEED); 
+      putarMotor(KECEPATAN_MOTOR, -KECEPATAN_MOTOR); 
   } 
-  //If both the sensors detect black line, then stop 
+  // Jika kedua sensor mendeteksi garis hitam, maka berhenti 
   else 
   {
-    rotateMotor(0, 0);
+    putarMotor(0, 0);
   }
 }
 
-
-void rotateMotor(int rightMotorSpeed, int leftMotorSpeed)
+void putarMotor(int kecepatanMotorKanan, int kecepatanMotorKiri)
 {
-  
-  if (rightMotorSpeed < 0)
+  if (kecepatanMotorKanan < 0)
   {
-    digitalWrite(rightMotorPin1,LOW);
-    digitalWrite(rightMotorPin2,HIGH);    
+    digitalWrite(motorKananPin1, LOW);
+    digitalWrite(motorKananPin2, HIGH);    
   }
-  else if (rightMotorSpeed > 0)
+  else if (kecepatanMotorKanan > 0)
   {
-    digitalWrite(rightMotorPin1,HIGH);
-    digitalWrite(rightMotorPin2,LOW);      
+    digitalWrite(motorKananPin1, HIGH);
+    digitalWrite(motorKananPin2, LOW);      
   }
   else
   {
-    digitalWrite(rightMotorPin1,LOW);
-    digitalWrite(rightMotorPin2,LOW);      
+    digitalWrite(motorKananPin1, LOW);
+    digitalWrite(motorKananPin2, LOW);      
   }
 
-  if (leftMotorSpeed < 0)
+  if (kecepatanMotorKiri < 0)
   {
-    digitalWrite(leftMotorPin1,LOW);
-    digitalWrite(leftMotorPin2,HIGH);    
+    digitalWrite(motorKiriPin1, LOW);
+    digitalWrite(motorKiriPin2, HIGH);    
   }
-  else if (leftMotorSpeed > 0)
+  else if (kecepatanMotorKiri > 0)
   {
-    digitalWrite(leftMotorPin1,HIGH);
-    digitalWrite(leftMotorPin2,LOW);      
+    digitalWrite(motorKiriPin1, HIGH);
+    digitalWrite(motorKiriPin2, LOW);      
   }
   else 
   {
-    digitalWrite(leftMotorPin1,LOW);
-    digitalWrite(leftMotorPin2,LOW);      
+    digitalWrite(motorKiriPin1, LOW);
+    digitalWrite(motorKiriPin2, LOW);      
   }
-  analogWrite(enableRightMotor, abs(rightMotorSpeed));
-  analogWrite(enableLeftMotor, abs(leftMotorSpeed));    
+  analogWrite(enableMotorKanan, abs(kecepatanMotorKanan));
+  analogWrite(enableMotorKiri, abs(kecepatanMotorKiri));    
 }
