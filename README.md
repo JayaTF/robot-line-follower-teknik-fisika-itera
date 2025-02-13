@@ -1,3 +1,3 @@
 # Robot Line Follower Teknik Fisika
 
-![Preview](skematik-rangkaian.png)
+![Preview](Skematik-rangkaian.png)
